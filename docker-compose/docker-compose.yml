@@ -1,3 +1,4 @@
+version: '3.8'
 services:
   mysql:
     image: mysql:5.7.37
@@ -28,4 +29,16 @@ services:
         condition: service_healthy
     volumes:
       - ./conf/cp:/home/wso2carbon/wso2-config-volume
-      - ./entrypoints/cp/docker-entrypoint.sh:/home/wso2carbon/docker-entrypoint.sh
+      - ./entrypoints/docker-entrypoint.sh:/home/wso2carbon/docker-entrypoint.sh
+  gateway:
+    build: ./dockerfiles/apim
+    environment:
+      PROFILE_NAME: gateway-worker
+    depends_on:
+      mysql:
+        condition: service_healthy
+      control-plane:
+        condition: service_healthy
+    volumnes:
+      - ./conf/gateway:/home/wso2carbon/wso2-config-volume
+      - ./entrypoints/docker-entrypoint.sh:/home/wso2carbon/docker-entrypoint.sh
